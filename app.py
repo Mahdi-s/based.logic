@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 import requests
+from datetime import datetime
 
 # Initialize session state
 if 'current_question' not in st.session_state:
@@ -36,12 +37,18 @@ def get_candidate_info(level):
 
 # Main app
 def main():
-    st.title("Based Logic: US Election Insight")
+    st.title("Based Logic")
 
-    # User input
-    zipcode = st.text_input("Enter your Zipcode")
-    gender = st.selectbox("Select your Gender", ["Male", "Female", "Other"])
-    dob = st.date_input("Enter your Date of Birth")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        zipcode = st.text_input("Enter your Zipcode", key="zipcode_input")
+    with col2:
+        gender_options = ["Male", "Female", "Other"]
+        gender = st.selectbox("Select your Gender", gender_options, key="gender_select")
+    with col3:
+        current_year = datetime.now().year
+        dob = st.date_input("Enter your Date of Birth", min_value=datetime(1920, 1, 1), max_value=datetime(current_year, 12, 31))
+
 
     if zipcode and gender and dob:
         sentences = get_sentences_from_db()
