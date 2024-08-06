@@ -3,6 +3,7 @@ import pandas as pd
 from PIL import Image
 import requests
 from datetime import datetime
+from pymongo import MongoClient
 
 # Initialize session state
 if 'current_question' not in st.session_state:
@@ -10,16 +11,20 @@ if 'current_question' not in st.session_state:
 if 'answers' not in st.session_state:
     st.session_state.answers = []
 
-# Function to get sentences from database (placeholder)
+# MongoDB connection setup
+def get_mongodb_connection():
+    # Replace with your MongoDB connection string
+    connection_string = "mongodb://username:password@host:port/database"
+    client = MongoClient(connection_string)
+    db = client["your_database_name"]
+    return db
+
+# Function to get sentences from MongoDB
 def get_sentences_from_db():
-    # Replace this with actual database query
-    return [
-        "The government should increase funding for education.",
-        "Healthcare should be a universal right.",
-        "Climate change is a pressing issue that needs immediate action.",
-        "The tax system should be reformed to reduce income inequality.",
-        "Immigration policies should be more lenient."
-    ]
+    db = get_mongodb_connection()
+    sentences_collection = db["sentences"]
+    sentences = list(sentences_collection.find({}, {"text": 1, "_id": 0}))
+    return [sentence["text"] for sentence in sentences]
 
 # Function to get candidate information (placeholder)
 def get_candidate_info(level):
@@ -178,7 +183,8 @@ def main():
                             st.image(candidate['photo'], width=100)
 
 def save_answer_to_db(question_index, answer):
-    # Replace this with actual database save operation
+    # Replace this wi
+    # th actual database save operation
     print(f"Saving answer: Question {question_index + 1}, Answer: {answer}")
 if __name__ == "__main__":
     main()
